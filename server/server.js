@@ -12,6 +12,8 @@ const io = new Server(server, {
   }
 });
 
+const PORT = process.env.PORT || 5000;
+
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
 
@@ -32,6 +34,6 @@ socket.on("send_message", (data) => {
   });
 });
 
-server.listen(5000, () => {
-  console.log("Server running on port 5000");
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
