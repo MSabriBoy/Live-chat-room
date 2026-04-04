@@ -104,7 +104,13 @@ cd ../server
 npm install
 ```
 
-### 3️⃣ Run Development Server (Monorepo)
+### 3️⃣ Environment Setup
+
+Create `.env` file inside client:
+
+VITE_BACKEND_URL=http://localhost:5000
+
+### 4️⃣ Run Development Server (Monorepo)
 
 ```bash
 npm run dev
