@@ -5,35 +5,48 @@ const { Server } = require("socket.io");
 const app = express();
 const server = http.createServer(app);
 
+const allowedOrigin = [
+    "http://localhost:5173",
+    "https://live-chat-room-pi.vercel.app",
+
+
+]
+
 const io = new Server(server, {
-  cors: {
-    origin: "https://live-chat-room-pi.vercel.app",
-    methods: ["GET", "POST"]
-  }
+    cors: {
+        origin: (origin, callback) => {
+            if (!origin || allowedOrigin.includes(origin)) {
+                callback(null, true);
+            } else {
+                callback(new Error("Not allowed by the Cors"));
+            }
+        },
+        methods: ["GET", "POST"]
+    }
 });
 
 const PORT = process.env.PORT || 5000;
 
 io.on("connection", (socket) => {
-  console.log("User connected:", socket.id);
+    console.log("User connected:", socket.id);
 
-  socket.on("join_room", (room) => {
-    socket.join(room);
-     console.log(`User joined room: ${room}`);
-  });
-socket.on("send_message", (data) => {
-  io.to(data.room).emit("receive_message", data);
-});
+    socket.on("join_room", (room) => {
+        socket.join(room);
+        console.log(`User joined room: ${room}`);
+    });
+    socket.on("send_message", (data) => {
+        io.to(data.room).emit("receive_message", data);
+    });
 
-  socket.on("typing", (data) => {
-    socket.to(data.room).emit("typing", data);
-  });
+    socket.on("typing", (data) => {
+        socket.to(data.room).emit("typing", data);
+    });
 
-  socket.on("disconnect", () => {
-    console.log("User disconnected");
-  });
+    socket.on("disconnect", () => {
+        console.log("User disconnected");
+    });
 });
 
 server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
